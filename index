@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>彩虹氣象日記本🌈</title>
+  <style>
+    body {
+      font-family: '微軟正黑體', sans-serif;
+      background: linear-gradient(to bottom, #e3fcfd, #fff0f5);
+      text-align: center;
+      padding: 50px 20px;
+      color: #444;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #ff69b4;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px #ffc0cb;
+    }
+
+    input[type="text"] {
+      padding: 10px 15px;
+      border: 2px solid #ffb6c1;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 250px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #ff69b4;
+      box-shadow: 0 0 5px #ffb6c1;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #ffb6c1;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #ff69b4;
+      box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+    }
+
+    #weather {
+      margin-top: 30px;
+      font-size: 20px;
+      background-color: #ffffffdd;
+      display: inline-block;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: left;
+      color: #333;
+      line-height: 1.8;
+    }
+
+    #weather::before {
+      content: "☁️ 今日天氣報告";
+      display: block;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #ff69b4;
+    }
+  </style>
+</head>
+<body>
+  <h1>彩虹氣象日記本🌈</h1>
+  <input type="text" id="cityInput" placeholder="輸入城市（例：Taipei）">
+  <button onclick="getWeather()">今天天空怎麼說？</button>
+  <div id="weather"></div>
+
+  <!-- 🎵 背景音樂 -->
+  <audio id="bgm" src="your-music.mp3" autoplay loop></audio>
+
+  <script>
+    // 🎵 音樂自動啟動（避免被瀏覽器阻擋）
+    document.addEventListener('click', function () {
+      const bgm = document.getElementById('bgm');
+      if (bgm.paused) {
+        bgm.play();
+      }
+    }, { once: true });
+
+    // ☁️ 查詢天氣功能
+    async function getWeather() {
+      const city = document.getElementById('cityInput').value.trim();
+      const apiKey = 'e957e34ad3b640a59a26daa8a8f0a920';
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=zh_tw`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+          document.getElementById('weather').innerHTML =
+            `🌡️ <strong>溫度：</strong>${data.main.temp}°C<br>
+             💧 <strong>濕度：</strong>${data.main.humidity}%<br>
+             🌬️ <strong>風速：</strong>${data.wind.speed} m/s<br>
+             🌈 <strong>狀態：</strong>${data.weather[0].description}`;
+        } else {
+          document.getElementById('weather').innerText = `找不到城市：${data.message} (｡•́︿•̀｡)`;
+        }
+      } catch (error) {
+        document.getElementById('weather').innerText = '連線失敗啦 (｡ŏ﹏ŏ)';
+        console.error('錯誤：', error);
+      }
+    }
+  </script>
+</body>
+</html>
